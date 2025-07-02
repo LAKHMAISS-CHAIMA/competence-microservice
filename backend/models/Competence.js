@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { compareStatutGlobal } from "../services/competenceService.js";
 
 const competenceSchema = new mongoose.Schema({
   code: {
@@ -29,18 +30,10 @@ const competenceSchema = new mongoose.Schema({
   },
 });
 
-competenceSchema.methods.compareStatutGlobal = function () {
-  const total = this.sousCompetence.length;
-  const validees = this.sousCompetence.filter(
-    (sc) => sc.statut === "validée"
-  ).length;
 
-const nonValidees = total - validees;
-return validees >= nonValidees ? "validée" : "non validée";
-};
 
 competenceSchema.pre("save", function (next) {
-  this.statutGlobal = this.compareStatutGlobal(); 
+  this.statutGlobal = compareStatutGlobal(this.sousCompetence);
   next();
 });
 
