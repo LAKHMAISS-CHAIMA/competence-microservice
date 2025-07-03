@@ -55,7 +55,10 @@ test('PUT /competences/:id/evaluation - Should update sous-compétences', async 
 
   const response = await request(app)
     .put(`/api/competences/${createdCompetence._id}/evaluation`)
-    .send({ sousCompetence: updatedSousCompetences });
+    .send({
+      sousCompetence: updatedSousCompetences,
+      sousCompetenceDecisive: 'SousComp1'
+    });
 
   expect(response.status).toBe(200);
   expect(response.body.sousCompetence).toEqual(

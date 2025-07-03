@@ -22,7 +22,7 @@ export const createCompetence = async (req, res) => {
 export const updateSousCompetences = async (req, res) => {
   try {
     const { id } = req.params;
-    const { sousCompetence } = req.body;
+    const { sousCompetence, sousCompetenceDecisive } = req.body;
 
     const competence = await Competence.findById(id);
     if (!competence) {
@@ -30,6 +30,8 @@ export const updateSousCompetences = async (req, res) => {
     }
 
     competence.sousCompetence = sousCompetence;
+    const { compareStatutGlobal } = await import("../services/competenceService.js");
+    competence.statutGlobal = compareStatutGlobal(sousCompetence, sousCompetenceDecisive);
     await competence.save();
 
     res.status(200).json(competence);

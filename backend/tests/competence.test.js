@@ -20,4 +20,22 @@ describe("compareStatutGlobal", () => {
         const competence = compareStatutGlobal(sousCompetences);
         expect(competence).toBe("non validée");
     })
+
+    it("devrait trancher l'égalité selon la sous-compétence décisive (validée)", () => {
+        const sousCompetences = [
+            { nom: "SC1", statut: "validée" },
+            { nom: "SC2", statut: "non validée" },
+        ];
+        const competence = compareStatutGlobal(sousCompetences, "SC1");
+        expect(competence).toBe("validée");
+    });
+
+    it("devrait trancher l'égalité selon la sous-compétence décisive (non validée)", () => {
+        const sousCompetences = [
+            { nom: "SC1", statut: "validée" },
+            { nom: "SC2", statut: "non validée" },
+        ];
+        const competence = compareStatutGlobal(sousCompetences, "SC2");
+        expect(competence).toBe("non validée");
+    });
 })

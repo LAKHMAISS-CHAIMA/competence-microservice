@@ -33,7 +33,9 @@ const competenceSchema = new mongoose.Schema({
 
 
 competenceSchema.pre("save", function (next) {
-  this.statutGlobal = compareStatutGlobal(this.sousCompetence);
+  if (!this.isModified('statutGlobal')) {
+    this.statutGlobal = compareStatutGlobal(this.sousCompetence);
+  }
   next();
 });
 
