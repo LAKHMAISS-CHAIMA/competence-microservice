@@ -49,3 +49,16 @@ export const deleteCompetence = async (req, res) => {
     res.status(400).json({ error: "Erreur lors de la suppression de la compétence" });
   }
 };
+
+export const getCompetenceById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const competence = await Competence.findById(id);
+    if (!competence) {
+      return res.status(404).json({ error: "Compétence non trouvée" });
+    }
+    res.status(200).json(competence);
+  } catch (error) {
+    res.status(400).json({ error: "Erreur lors de la récupération de la compétence" });
+  }
+};
