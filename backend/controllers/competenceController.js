@@ -21,14 +21,17 @@ export const createCompetence = async (req, res) => {
 
 export const updateSousCompetences = async (req, res) => {
   try {
+    console.log('Body reçu pour update :', req.body);
     const { id } = req.params;
-    const { sousCompetence, sousCompetenceDecisive } = req.body;
+    const { sousCompetence, sousCompetenceDecisive, code, nom } = req.body;
 
     const competence = await Competence.findById(id);
     if (!competence) {
       return res.status(404).json({ error: "Compétence non trouvée" });
     }
 
+    if (code) competence.code = code;
+    if (nom) competence.nom = nom;
     competence.sousCompetence = sousCompetence;
     const { compareStatutGlobal } = await import("../services/competenceService.js");
     competence.statutGlobal = compareStatutGlobal(sousCompetence, sousCompetenceDecisive);

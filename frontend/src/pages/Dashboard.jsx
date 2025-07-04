@@ -17,7 +17,7 @@ function Dashboard() {
         animateBy="words"
         direction="top"
         onAnimationComplete={handleAnimationComplete}
-        className="text-4xl md:text-5xl font-extrabold text-fuchsia-700 text-center mb-4 drop-shadow-lg"
+        className="text-4xl md:text-5xl font-extrabold text-fuchsia-700 text-center mb-4 ml-15 drop-shadow-lg"
       />
       <p className="text-lg md:text-2xl text-fuchsia-900 text-center mb-8 max-w-2xl">Gérez, ajoutez et suivez vos compétences et sous-compétences facilement, avec une interface moderne et intuitive.</p>
       <div className="flex gap-6 mt-2">

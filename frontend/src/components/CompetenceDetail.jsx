@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 function compareStatutGlobal(sousCompetence = [], sousCompetenceDecisive = null) {
     const { validée, nonValidée } = sousCompetence.reduce(
@@ -43,12 +44,27 @@ function CompetenceDetail({ competenceId, onClose }) {
         fetchCompetence();
     }, [competenceId]);
 
+    const updateSousCompetences = async (newSousCompetences, newDecisive) => {
+        try {
+            await axios.put(`http://localhost:8000/competences/${competenceId}/evaluation`, {
+                sousCompetence: newSousCompetences,
+                sousCompetenceDecisive: newDecisive,
+              });
+            toast.success('Mise à jour enregistrée !');
+        } catch (err) {
+            toast.error("Erreur lors de la sauvegarde !");
+        }
+    };
+
     const handleStatut = (idx, statut) => {
-        setSousCompetences(sousCompetences.map((sc, i) => i === idx ? { ...sc, statut } : sc));
+        const updated = sousCompetences.map((sc, i) => i === idx ? { ...sc, statut } : sc);
+        setSousCompetences(updated);
+        updateSousCompetences(updated, decisive);
     };
 
     const handleDecisive = (idx) => {
         setDecisive(sousCompetences[idx].nom);
+        updateSousCompetences(sousCompetences, sousCompetences[idx].nom);
     };
 
     if (loading) return <div className="text-center py-8 text-gray-500">Chargement...</div>;

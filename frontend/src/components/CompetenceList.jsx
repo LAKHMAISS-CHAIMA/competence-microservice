@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CompetenceDetail from './CompetenceDetail';
+import CompetenceForm from './CompetenceForm';
 import toast, { Toaster } from 'react-hot-toast';
 
 function CompetenceList() {
@@ -8,18 +9,21 @@ function CompetenceList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCompetenceId, setSelectedCompetenceId] = useState(null);
+  const [editCompetence, setEditCompetence] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const fetchCompetences = async () => {
+    try {
+      const res = await axios.get('http://localhost:8000/competences');
+      setCompetences(res.data);
+    } catch (err) {
+      setError('Erreur lors du chargement des compétences');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCompetences = async () => {
-      try {
-        const res = await axios.get('http://localhost:8000/competences');
-        setCompetences(res.data);
-      } catch (err) {
-        setError('Erreur lors du chargement des compétences');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCompetences();
   }, []);
 
@@ -32,6 +36,18 @@ function CompetenceList() {
     } catch (err) {
       toast.error('Erreur lors de la suppression');
     }
+  };
+
+  const handleEdit = (comp) => {
+    setEditCompetence(comp);
+    setShowEditModal(true);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
+    setEditCompetence(null);
+    fetchCompetences();
+    toast.success('Compétence modifiée avec succès');
   };
 
   if (loading) return <div className="text-center py-8 text-gray-500">Chargement...</div>;
@@ -77,6 +93,7 @@ function CompetenceList() {
                 type="button"
                 className="relative inline-flex items-center justify-center px-4 py-2 overflow-hidden tracking-tighter text-white bg-fuchsia-600 rounded-md group text-sm md:text-base"
                 title="Modifier la compétence"
+                onClick={() => handleEdit(comp)}
               >
                 <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-fuchsia-200 rounded-full group-hover:w-40 group-hover:h-16"></span>
                 <span className="relative flex items-center gap-2 z-10">
@@ -105,6 +122,19 @@ function CompetenceList() {
           <div className="relative w-full max-w-2xl mx-auto">
             <CompetenceDetail competenceId={selectedCompetenceId} onClose={() => setSelectedCompetenceId(null)} />
             <button onClick={() => setSelectedCompetenceId(null)} className="absolute top-2 right-2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 text-gray-700 font-bold">&times;</button>
+          </div>
+        </div>
+      )}
+      {showEditModal && editCompetence && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative w-full max-w-2xl mx-auto">
+            <CompetenceForm
+              initialValues={editCompetence}
+              editMode={true}
+              onSuccess={handleEditSuccess}
+              onClose={() => { setShowEditModal(false); setEditCompetence(null); }}
+            />
+            <button onClick={() => { setShowEditModal(false); setEditCompetence(null); }} className="absolute top-2 right-2 p-2 bg-gray-200 rounded-full hover:bg-gray-300 text-gray-700 font-bold">&times;</button>
           </div>
         </div>
       )}

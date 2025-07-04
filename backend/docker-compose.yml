@@ -14,6 +14,15 @@ services:
     depends_on:
       - mongo
 
+  frontend:
+    build:
+      context: ../frontend
+    container_name: competence-frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
+
   mongo:
     image: mongo:6
     container_name: mongo-db
